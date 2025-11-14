@@ -1,0 +1,468 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    color: #000;
+}
+
+/* Header */
+header {
+    background-color: #ff69b4;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* Main */
+main {
+    width: 100%;
+}
+
+/* Hero Section */
+.hero {
+    background-color: white;
+    padding: 60px 40px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero h1 {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.hero p {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #000;
+}
+
+.btn-change {
+    background-color: #ff69b4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.hero-image {
+    flex: 1;
+    background-color: #f5f5f5;
+    height: 400px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-image model-viewer {
+    width: 100%;
+    height: 100%;
+    background-color: #eeeeee;
+}
+
+/* Customization Panel */
+.customization-panel {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 300px;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+}
+
+.customization-panel h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: #000;
+    font-weight: bold;
+}
+
+.custom-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.control-group label {
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+}
+
+.control-group select,
+.control-group input[type="range"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.control-group select {
+    cursor: pointer;
+}
+
+.control-group input[type="range"] {
+    width: 100%;
+    cursor: pointer;
+}
+
+.control-group input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.control-group span {
+    font-weight: bold;
+    color: #ff69b4;
+}
+
+/* Our Cakes Section */
+.our-cakes {
+    background-color: #ffe4e1;
+    padding: 60px 40px;
+}
+
+.our-cakes h2 {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    color: #000;
+}
+
+.cakes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cake-card {
+    background-color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.cake-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cake-image {
+    background-color: #f5f5f5;
+    height: 180px;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
+.cake-image model-viewer {
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+}
+
+.cake-info {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.cake-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+}
+
+.btn-3d {
+    background-color: #ff69b4;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-3d:hover {
+    background-color: #ff1493;
+}
+
+/* 3D Model Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1100px;
+    position: relative;
+}
+
+.modal-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #000;
+}
+
+#modal-cake-name {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #000;
+}
+
+.modal-viewer-container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+#model-viewer {
+    flex: 1;
+    height: 500px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.modal-customization {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.modal-customization h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: #000;
+    font-weight: bold;
+}
+
+.color-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.color-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.color-group label {
+    font-size: 14px;
+    color: #000;
+    font-weight: 500;
+}
+
+#color-picker {
+    width: 100%;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-presets {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.color-preset {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 0;
+}
+
+.color-preset:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-preset.active {
+    border-color: #ff69b4;
+    border-width: 3px;
+    box-shadow: 0 0 0 2px rgba(255, 105, 180, 0.3);
+}
+
+.btn-reset {
+    background-color: #ff69b4;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-reset:hover {
+    background-color: #ff1493;
+}
+
+/* Responsive design for modal */
+@media (max-width: 768px) {
+    .modal-viewer-container {
+        flex-direction: column;
+    }
+    
+    .modal-customization {
+        width: 100%;
+    }
+    
+    #model-viewer {
+        height: 400px;
+    }
+}
+
+/* Contact Section */
+.contact {
+    background-color: white;
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.contact-content {
+    width: 400px;
+}
+
+.contact h2 {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #000;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #000;
+}
+
+.form-group input {
+    padding: 12px;
+    background-color: #f5f5f5;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.btn-submit {
+    background-color: #ff69b4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Footer */
+footer {
+    background-color: #000;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}

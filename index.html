@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CakeMyDay - Handcrafted Cakes</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">CakeMyDay</div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#our-cakes">Our cakes</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Handcrafted Cakes Made to Delight.</h1>
+                <p>Discover artisanal cakes made with premium ingredients, refined techniques, and a touch of creativity. Each design is thoughtfully crafted to elevate your celebrations with unforgettable flavor, beauty, and sophistication.</p>
+                <button class="btn-change">Change model</button>
+            </div>
+            <div class="hero-image">
+                <model-viewer 
+                    id="hero-model-viewer"
+                    src="assets/wedding-cake.glb" 
+                    alt="Handcrafted Cake" 
+                    camera-controls 
+                    auto-rotate 
+                    interaction-policy="allow-when-focused"
+                    loading="eager"
+                    reveal="auto">
+                </model-viewer>
+            </div>
+        </section>
+
+        <!-- Our Cakes Section -->
+        <section class="our-cakes" id="our-cakes">
+            <h2>Our cakes</h2>
+            <div class="cakes-grid">
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer
+                            src="assets/chocolate.glb" 
+                            alt="Chocolate"
+                            camera-controls
+                            auto-rotate
+                            camera-controls
+                            auto-rotate
+                            interaction-policy="allow-when-focused" loading="eager" reveal="auto">
+                           
+                        </model-viewer>
+
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Chocolate</h3>
+                        <button class="btn-3d" data-cake="chocolate">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/wedding-cake.glb"
+                        alt="Wedding Cake" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Wedding Cake</h3>
+                        <button class="btn-3d" data-cake="wedding-cake">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/strawberry.glb" alt="Strawberry" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Strawberry</h3>
+                        <button class="btn-3d" data-cake="strawberry">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/carousel.glb" alt="Carousel" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Carousel</h3>
+                        <button class="btn-3d" data-cake="carousel">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/flower-cake.glb" alt="Flower Cake" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Flower Cake</h3>
+                        <button class="btn-3d" data-cake="flower-cake">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/pear-cake.glb" alt="Pear Cake" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Pear Cake</h3>
+                        <button class="btn-3d" data-cake="pear-cake">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/Macarons-cake.glb" alt="Macarons Cake" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Macarons Cake</h3>
+                        <button class="btn-3d" data-cake="Macarons-cake">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/circus.glb" alt="Circus" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Circus</h3>
+                        <button class="btn-3d" data-cake="circus">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/blackforest.glb" alt="Blackforest" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Blackforest</h3>
+                        <button class="btn-3d" data-cake="blackforest">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/lanterm.glb" alt="Lanterm" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Lantern</h3>
+                        <button class="btn-3d" data-cake="lanterm">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/flower-25.glb" alt="Flower 25" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Flower cake</h3>
+                        <button class="btn-3d" data-cake="flower-25">View in 3D</button>
+                    </div>
+                </div>
+                <div class="cake-card">
+                    <div class="cake-image">
+                        <model-viewer src="assets/flower-flat-25.glb" alt="Flower Flat 25" camera-controls auto-rotate interaction-policy="allow-when-focused" loading="eager" reveal="auto"></model-viewer>
+                    </div>
+                    <div class="cake-info">
+                        <h3 class="cake-name">Flower Flat Cake</h3>
+                        <button class="btn-3d" data-cake="flower-flat-25">View in 3D</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3D Model Modal -->
+        <div id="modal-3d" class="modal">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <h2 id="modal-cake-name">View in 3D</h2>
+                <div class="modal-viewer-container">
+                    <model-viewer 
+                        id="model-viewer"
+                        src="" 
+                        alt="3D Cake Model"
+                        camera-controls
+                        auto-rotate>
+                    </model-viewer>
+                    <div class="modal-customization">
+                        <h3>Customize Color</h3>
+                        <div class="color-controls">
+                            <div class="color-group">
+                                <label for="color-picker">Cake Color:</label>
+                                <input type="color" id="color-picker" value="#ff69b4">
+                            </div>
+                            <div class="color-group">
+                                <label>Quick Colors:</label>
+                                <div class="color-presets">
+                                    <button class="color-preset" data-color="#ff69b4" style="background-color: #ff69b4;" title="Pink"></button>
+                                    <button class="color-preset" data-color="#8B4513" style="background-color: #8B4513;" title="Brown"></button>
+                                    <button class="color-preset" data-color="#FFD700" style="background-color: #FFD700;" title="Gold"></button>
+                                    <button class="color-preset" data-color="#FF1493" style="background-color: #FF1493;" title="Deep Pink"></button>
+                                    <button class="color-preset" data-color="#FF6347" style="background-color: #FF6347;" title="Tomato"></button>
+                                    <button class="color-preset" data-color="#9370DB" style="background-color: #9370DB;" title="Purple"></button>
+                                    <button class="color-preset" data-color="#FFB6C1" style="background-color: #FFB6C1;" title="Light Pink"></button>
+                                    <button class="color-preset" data-color="#FFA500" style="background-color: #FFA500;" title="Orange"></button>
+                                </div>
+                            </div>
+                            <div class="color-group">
+                                <button id="reset-color" class="btn-reset">Reset to Original</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section -->
+        <section class="contact" id="contact">
+            <div class="contact-content">
+                <h2>Contact</h2>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="firstname">First name</label>
+                        <input type="text" id="firstname" name="firstname">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname">Last name</label>
+                        <input type="text" id="lastname" name="lastname">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <button type="submit" class="btn-submit">Submit</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Basic Store.</p>
+    </footer>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
+

@@ -56,8 +56,6 @@ main {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    will-change: transform, opacity;
-    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
 }
 
 .big-hero-cake-container {
@@ -76,6 +74,7 @@ main {
     max-height: 800px;
     background-color: transparent;
     transition: opacity 0.3s ease;
+    will-change: transform;
 }
 
 /* Skeleton wireframe mode styling */

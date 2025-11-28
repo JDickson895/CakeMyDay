@@ -279,12 +279,31 @@ document.addEventListener('DOMContentLoaded', function() {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
         
+        // Function to update parallax scroll effect
+        function updateParallaxScroll() {
+            const scrollPosition = window.scrollY || window.pageYOffset;
+            const bigHeroTop = bigHeroSection.offsetTop;
+            const bigHeroHeight = bigHeroSection.offsetHeight;
+            
+            // Calculate how much the cake should move (parallax effect)
+            // The cake moves at a different speed than the scroll
+            const parallaxSpeed = 0.5; // Adjust this value to change parallax intensity (0.5 = moves at half scroll speed)
+            const scrollWithinSection = Math.max(0, scrollPosition - bigHeroTop);
+            const parallaxOffset = scrollWithinSection * parallaxSpeed;
+            
+            // Apply transform to move the cake
+            if (bigHeroCake) {
+                bigHeroCake.style.transform = `translateY(${parallaxOffset}px)`;
+            }
+        }
+        
         // Throttled scroll handler
         let ticking = false;
         window.addEventListener('scroll', () => {
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     updateCakeReveal();
+                    updateParallaxScroll();
                     ticking = false;
                 });
                 ticking = true;
@@ -292,52 +311,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
         
         // Initial check
-        setTimeout(() => updateCakeReveal(), 200);
+        setTimeout(() => {
+            updateCakeReveal();
+            updateParallaxScroll();
+        }, 200);
         
         // Also check on resize
-        window.addEventListener('resize', updateCakeReveal);
-        
-        // Scroll effect for big-hero section
-        function updateBigHeroScrollEffect() {
-            const scrollPosition = window.scrollY || window.pageYOffset;
-            const bigHeroTop = bigHeroSection.offsetTop;
-            const bigHeroHeight = bigHeroSection.offsetHeight;
-            const scrollWithinSection = Math.max(0, scrollPosition - bigHeroTop);
-            
-            // Calculate scroll progress (0 to 1) within the section
-            const scrollProgress = Math.min(1, scrollWithinSection / bigHeroHeight);
-            
-            // Parallax effect: move section slower than scroll
-            const parallaxOffset = scrollWithinSection * 0.5; // 50% speed for parallax
-            
-            // Fade out as user scrolls past the section
-            const opacity = Math.max(0, 1 - scrollProgress * 1.5); // Fade out faster
-            
-            // Scale down slightly as scrolling
-            const scale = Math.max(0.8, 1 - scrollProgress * 0.2);
-            
-            // Apply transforms and opacity
-            bigHeroSection.style.transform = `translateY(${parallaxOffset}px) scale(${scale})`;
-            bigHeroSection.style.opacity = opacity;
-        }
-        
-        // Add scroll effect handler
-        let scrollTicking = false;
-        window.addEventListener('scroll', () => {
-            if (!scrollTicking) {
-                window.requestAnimationFrame(() => {
-                    updateBigHeroScrollEffect();
-                    scrollTicking = false;
-                });
-                scrollTicking = true;
-            }
-        }, { passive: true });
-        
-        // Initial check for scroll effect
-        updateBigHeroScrollEffect();
-        
-        // Also update on resize
-        window.addEventListener('resize', updateBigHeroScrollEffect);
+        window.addEventListener('resize', () => {
+            updateCakeReveal();
+            updateParallaxScroll();
+        });
     }
 
     // Map cake names to their 3D model files
@@ -578,53 +561,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
         });
     });
-
-    // Reset color button
-    if (resetColorBtn) {
-        resetColorBtn.addEventListener('click', function() {
-            resetToOriginalColors();
-        });
-    }
-
-    // Open modal when "View in 3D" button is clicked
-    btn3dButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const cakeId = this.getAttribute('data-cake');
-            const cakeName = this.closest('.cake-card').querySelector('.cake-name').textContent;
-            const modelPath = cakeModels[cakeId] || 'assets/chocolate.glb';
-
-            modalCakeName.textContent = cakeName;
-            modelViewer.setAttribute('src', modelPath);
-            modal.style.display = 'block';
-            
-            // Reset color picker when opening modal
-            if (colorPicker) {
-                colorPicker.value = '#ff69b4';
-            }
-            colorPresets.forEach(preset => preset.classList.remove('active'));
-        });
-    });
-
-    // Close modal when X is clicked
-    modalClose.addEventListener('click', function() {
-        modal.style.display = 'none';
-    });
-
-    // Close modal when clicking outside of it
-    window.addEventListener('click', function(event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && modal.style.display === 'block') {
-            modal.style.display = 'none';
-        }
-    });
-});
-
 
     // Reset color button
     if (resetColorBtn) {

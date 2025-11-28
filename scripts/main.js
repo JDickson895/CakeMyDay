@@ -420,35 +420,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Example: How to customize materials/colors (if models support it)
-    // You can access the model and modify materials after it loads:
-    /*
-    heroModelViewer.addEventListener('load', () => {
-        const model = heroModelViewer.model;
-        if (model) {
-            // Access materials
-            model.materials.forEach((material) => {
-                // Change base color
-                if (material.pbrMetallicRoughness) {
-                    material.pbrMetallicRoughness.setBaseColorFactor([1, 0, 0, 1]); // Red
-                }
-                // Or use material.setProperty('baseColorFactor', [r, g, b, a])
-            });
-        }
-    });
-    */
 
-    // Example: How to use variants (if models have variants defined)
-    /*
-    // First check if model has variants
-    heroModelViewer.addEventListener('load', () => {
-        const variantNames = heroModelViewer.availableVariants;
-        if (variantNames && variantNames.length > 0) {
-            // Switch to a variant
-            heroModelViewer.variantName = variantNames[0];
-        }
-    });
-    */
 
     // Color customization variables
     const colorPicker = document.getElementById('color-picker');

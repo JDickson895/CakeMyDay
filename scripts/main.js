@@ -7,6 +7,338 @@ document.addEventListener('DOMContentLoaded', function() {
     const btn3dButtons = document.querySelectorAll('.btn-3d');
     const heroModelViewer = document.getElementById('hero-model-viewer');
     const btnChange = document.querySelector('.btn-change');
+    const bigHeroCake = document.getElementById('big-hero-cake');
+    const bigHeroSection = document.getElementById('big-hero');
+
+    // Skeleton wireframe mode and scroll-based progressive reveal for big hero cake
+    if (bigHeroCake && bigHeroSection) {
+        let originalMaterials = new Map();
+        let modelLoaded = false;
+        let THREE = null;
+        
+        // Load Three.js and setup wireframe mode
+        (async function initWireframeMode() {
+            try {
+                // Import Three.js
+                THREE = await import('three');
+                
+                // Wait for model to load
+                bigHeroCake.addEventListener('load', () => {
+                    setTimeout(() => setupWireframe(), 100);
+                }, { once: true });
+                
+                // If already loaded
+                if (bigHeroCake.loaded) {
+                    setTimeout(() => setupWireframe(), 100);
+                }
+            } catch (error) {
+                console.error('Failed to load Three.js:', error);
+            }
+        })();
+        
+        function setupWireframe() {
+            if (!THREE) return;
+            
+            try {
+                // Try multiple methods to access the Three.js scene/model
+                let model = null;
+                
+                // Method 1: Direct access to model property
+                if (bigHeroCake.model) {
+                    model = bigHeroCake.model;
+                }
+                // Method 2: Access through scene property
+                else if (bigHeroCake.scene) {
+                    model = bigHeroCake.scene;
+                }
+                // Method 3: Access through renderer
+                else {
+                    try {
+                        const renderer = bigHeroCake.getRenderer();
+                        if (renderer && renderer.domElement) {
+                            // Try to access the scene from the renderer
+                            const gltfLoader = bigHeroCake.loader;
+                            if (gltfLoader) {
+                                model = bigHeroCake.model;
+                            }
+                        }
+                    } catch (e) {
+                        console.log('Could not access through renderer:', e);
+                    }
+                }
+                
+                // Wait a bit more if model not found yet
+                if (!model) {
+                    setTimeout(() => {
+                        model = bigHeroCake.model || bigHeroCake.scene;
+                        if (model) {
+                            createWireframeMaterials(model);
+                        } else {
+                            console.warn('Could not access model after delay, retrying...');
+                            setTimeout(setupWireframe, 500);
+                        }
+                    }, 200);
+                    return;
+                }
+                
+                createWireframeMaterials(model);
+            } catch (error) {
+                console.error('Error setting up wireframe:', error);
+                // Retry once more after a delay
+                setTimeout(() => {
+                    if (!modelLoaded) {
+                        setupWireframe();
+                    }
+                }, 500);
+            }
+        }
+        
+        function createWireframeMaterials(model) {
+            if (!model || !THREE) return;
+            
+            modelLoaded = true;
+            originalMaterials.clear();
+            
+            // Traverse the model to find all meshes and create wireframe materials
+            model.traverse((object) => {
+                if (object.isMesh && object.material) {
+                    const materials = Array.isArray(object.material) ? object.material : [object.material];
+                    const originalMats = [];
+                    
+                    materials.forEach((material) => {
+                        // Store original material
+                        originalMats.push(material.clone());
+                    });
+                    
+                    // Store original materials
+                    originalMaterials.set(object, {
+                        materials: originalMats,
+                        isArray: Array.isArray(object.material)
+                    });
+                    
+                    // Create and apply wireframe material
+                    const wireframeMats = originalMats.map(() => {
+                        return new THREE.MeshBasicMaterial({
+                            color: 0x000000,
+                            wireframe: true,
+                            transparent: true,
+                            opacity: 1
+                        });
+                    });
+                    
+                    // Apply wireframe materials
+                    if (Array.isArray(object.material)) {
+                        object.material = wireframeMats;
+                    } else {
+                        object.material = wireframeMats[0];
+                    }
+                }
+            });
+            
+            // Set attribute to indicate skeleton mode
+            bigHeroCake.setAttribute('data-skeleton-mode', 'true');
+            
+            // Initial update
+            updateCakeReveal();
+        }
+        
+        // Function to update cake reveal based on scroll
+        function updateCakeReveal() {
+            if (!modelLoaded || originalMaterials.size === 0) return;
+            
+            const scrollPosition = window.scrollY || window.pageYOffset;
+            const bigHeroTop = bigHeroSection.offsetTop;
+            const bigHeroHeight = bigHeroSection.offsetHeight;
+            const scrollWithinSection = Math.max(0, scrollPosition - bigHeroTop);
+            
+            // Calculate reveal progress (0 to 1) based on scroll within the section
+            // Reveal happens over 70% of the section height for smooth transition
+            const revealRange = bigHeroHeight * 0.7;
+            let revealProgress = Math.min(1, scrollWithinSection / revealRange);
+            
+            // Smooth easing function
+            revealProgress = easeInOutCubic(revealProgress);
+            
+            // Update materials based on reveal progress
+            originalMaterials.forEach((orig, mesh) => {
+                const materials = orig.materials;
+                const wireframeOpacity = Math.max(0, 1 - revealProgress);
+                const fullOpacity = revealProgress;
+                
+                if (revealProgress < 0.05) {
+                    // Show only wireframe (skeleton mode)
+                    const wireframeMats = materials.map(() => {
+                        return new THREE.MeshBasicMaterial({
+                            color: 0x000000,
+                            wireframe: true,
+                            transparent: true,
+                            opacity: 1
+                        });
+                    });
+                    
+                    if (orig.isArray) {
+                        mesh.material = wireframeMats;
+                    } else {
+                        mesh.material = wireframeMats[0];
+                    }
+                } else if (revealProgress < 1) {
+                    // Blend between wireframe and full material
+                    const blendedMats = materials.map((originalMat) => {
+                        const blendedMat = originalMat.clone();
+                        blendedMat.transparent = true;
+                        blendedMat.opacity = fullOpacity;
+                        blendedMat.depthWrite = false;
+                        
+                        // Enable wireframe with decreasing opacity
+                        if (blendedMat.wireframe !== undefined) {
+                            blendedMat.wireframe = wireframeOpacity > 0.1;
+                        }
+                        
+                        return blendedMat;
+                    });
+                    
+                    if (orig.isArray) {
+                        mesh.material = blendedMats;
+                    } else {
+                        mesh.material = blendedMats[0];
+                    }
+                    
+                    // Add wireframe overlay for better skeleton effect
+                    if (wireframeOpacity > 0.1 && !mesh.userData.wireframeMesh) {
+                        const wireframeMesh = mesh.clone();
+                        wireframeMesh.material = materials.map(() => {
+                            return new THREE.MeshBasicMaterial({
+                                color: 0x000000,
+                                wireframe: true,
+                                transparent: true,
+                                opacity: wireframeOpacity * 0.5
+                            });
+                        });
+                        if (!orig.isArray) {
+                            wireframeMesh.material = new THREE.MeshBasicMaterial({
+                                color: 0x000000,
+                                wireframe: true,
+                                transparent: true,
+                                opacity: wireframeOpacity * 0.5
+                            });
+                        }
+                        mesh.parent.add(wireframeMesh);
+                        mesh.userData.wireframeMesh = wireframeMesh;
+                    } else if (mesh.userData.wireframeMesh) {
+                        const wireMat = mesh.userData.wireframeMesh.material;
+                        if (Array.isArray(wireMat)) {
+                            wireMat.forEach(m => m.opacity = wireframeOpacity * 0.5);
+                        } else {
+                            wireMat.opacity = wireframeOpacity * 0.5;
+                        }
+                        
+                        if (wireframeOpacity <= 0.1) {
+                            mesh.parent.remove(mesh.userData.wireframeMesh);
+                            mesh.userData.wireframeMesh = null;
+                        }
+                    }
+                } else {
+                    // Fully reveal original materials
+                    const fullMats = materials.map(mat => {
+                        mat.transparent = false;
+                        mat.opacity = 1;
+                        mat.depthWrite = true;
+                        return mat;
+                    });
+                    
+                    if (orig.isArray) {
+                        mesh.material = fullMats;
+                    } else {
+                        mesh.material = fullMats[0];
+                    }
+                    
+                    // Remove wireframe overlay
+                    if (mesh.userData.wireframeMesh) {
+                        mesh.parent.remove(mesh.userData.wireframeMesh);
+                        mesh.userData.wireframeMesh = null;
+                    }
+                }
+            });
+            
+            // Rotate camera based on scroll
+            const rotationMultiplier = 0.3;
+            const currentRotation = scrollWithinSection * rotationMultiplier;
+            bigHeroCake.setAttribute('camera-orbit', `${currentRotation}deg 75deg auto`);
+            
+            // Update data attributes for CSS
+            bigHeroCake.setAttribute('data-reveal-progress', revealProgress);
+            if (revealProgress >= 1) {
+                bigHeroCake.removeAttribute('data-skeleton-mode');
+            } else {
+                bigHeroCake.setAttribute('data-skeleton-mode', 'true');
+            }
+        }
+        
+        // Easing function for smooth reveal
+        function easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+        
+        // Throttled scroll handler
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateCakeReveal();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        }, { passive: true });
+        
+        // Initial check
+        setTimeout(() => updateCakeReveal(), 200);
+        
+        // Also check on resize
+        window.addEventListener('resize', updateCakeReveal);
+        
+        // Scroll effect for big-hero section
+        function updateBigHeroScrollEffect() {
+            const scrollPosition = window.scrollY || window.pageYOffset;
+            const bigHeroTop = bigHeroSection.offsetTop;
+            const bigHeroHeight = bigHeroSection.offsetHeight;
+            const scrollWithinSection = Math.max(0, scrollPosition - bigHeroTop);
+            
+            // Calculate scroll progress (0 to 1) within the section
+            const scrollProgress = Math.min(1, scrollWithinSection / bigHeroHeight);
+            
+            // Parallax effect: move section slower than scroll
+            const parallaxOffset = scrollWithinSection * 0.5; // 50% speed for parallax
+            
+            // Fade out as user scrolls past the section
+            const opacity = Math.max(0, 1 - scrollProgress * 1.5); // Fade out faster
+            
+            // Scale down slightly as scrolling
+            const scale = Math.max(0.8, 1 - scrollProgress * 0.2);
+            
+            // Apply transforms and opacity
+            bigHeroSection.style.transform = `translateY(${parallaxOffset}px) scale(${scale})`;
+            bigHeroSection.style.opacity = opacity;
+        }
+        
+        // Add scroll effect handler
+        let scrollTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) {
+                window.requestAnimationFrame(() => {
+                    updateBigHeroScrollEffect();
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
+        
+        // Initial check for scroll effect
+        updateBigHeroScrollEffect();
+        
+        // Also update on resize
+        window.addEventListener('resize', updateBigHeroScrollEffect);
+    }
 
     // Map cake names to their 3D model files
     const cakeModels = {
@@ -246,6 +578,53 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
         });
     });
+
+    // Reset color button
+    if (resetColorBtn) {
+        resetColorBtn.addEventListener('click', function() {
+            resetToOriginalColors();
+        });
+    }
+
+    // Open modal when "View in 3D" button is clicked
+    btn3dButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const cakeId = this.getAttribute('data-cake');
+            const cakeName = this.closest('.cake-card').querySelector('.cake-name').textContent;
+            const modelPath = cakeModels[cakeId] || 'assets/chocolate.glb';
+
+            modalCakeName.textContent = cakeName;
+            modelViewer.setAttribute('src', modelPath);
+            modal.style.display = 'block';
+            
+            // Reset color picker when opening modal
+            if (colorPicker) {
+                colorPicker.value = '#ff69b4';
+            }
+            colorPresets.forEach(preset => preset.classList.remove('active'));
+        });
+    });
+
+    // Close modal when X is clicked
+    modalClose.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    // Close modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+            modal.style.display = 'none';
+        }
+    });
+});
+
 
     // Reset color button
     if (resetColorBtn) {

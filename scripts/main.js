@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let originalMaterials = new Map();
         let modelLoaded = false;
         let THREE = null;
+        let modelGroup = null; // Store reference to the model group for rotation
+        let autoRotationAngle = 0; // Track automatic rotation angle
         
         // Load Three.js and setup wireframe mode
         (async function initWireframeMode() {
@@ -99,6 +101,9 @@ document.addEventListener('DOMContentLoaded', function() {
             modelLoaded = true;
             originalMaterials.clear();
             
+            // Store reference to the model group for rotation
+            modelGroup = model;
+            
             // Traverse the model to find all meshes and create wireframe materials
             model.traverse((object) => {
                 if (object.isMesh && object.material) {
@@ -137,6 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Set attribute to indicate skeleton mode
             bigHeroCake.setAttribute('data-skeleton-mode', 'true');
+            
+            // Start automatic rotation animation
+            startAutoRotation();
             
             // Initial update
             updateCakeReveal();
@@ -260,11 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Rotate camera based on scroll
-            const rotationMultiplier = 0.3;
-            const currentRotation = scrollWithinSection * rotationMultiplier;
-            bigHeroCake.setAttribute('camera-orbit', `${currentRotation}deg 75deg auto`);
-            
             // Update data attributes for CSS
             bigHeroCake.setAttribute('data-reveal-progress', revealProgress);
             if (revealProgress >= 1) {
@@ -274,36 +277,78 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Automatic rotation animation (optional - can be disabled if scroll rotation is preferred)
+        function startAutoRotation() {
+            const rotationSpeed = 0.0005; // Reduced speed since scroll rotation is primary
+            const enableAutoRotate = false; // Set to true if you want auto-rotation alongside scroll
+            
+            if (!enableAutoRotate) return; // Skip auto-rotation if disabled
+            
+            function animate() {
+                if (modelLoaded && modelGroup && enableAutoRotate) {
+                    // Increment automatic rotation
+                    autoRotationAngle += rotationSpeed;
+                    
+                    // Get current scroll rotation
+                    const scrollY = window.scrollY || window.pageYOffset;
+                    const scrollRotation = (scrollY * 0.3 * Math.PI) / 180; // Convert to radians
+                    
+                    // Combine with auto rotation
+                    const totalRotation = scrollRotation + autoRotationAngle;
+                    
+                    // Apply to model group if available
+                    if (modelGroup.rotation) {
+                        modelGroup.rotation.y = totalRotation;
+                    }
+                    
+                    // Continue animation
+                    requestAnimationFrame(animate);
+                }
+            }
+            
+            // Start animation loop
+            animate();
+        }
+        
         // Easing function for smooth reveal
         function easeInOutCubic(t) {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
         
-        // Function to update parallax scroll effect
-        function updateParallaxScroll() {
-            const scrollPosition = window.scrollY || window.pageYOffset;
-            const bigHeroTop = bigHeroSection.offsetTop;
-            const bigHeroHeight = bigHeroSection.offsetHeight;
+        // Function to handle scroll-based rotation
+        function handleScrollRotation() {
+            if (!bigHeroCake || !modelLoaded) return;
             
-            // Calculate how much the cake should move (parallax effect)
-            // The cake moves at a different speed than the scroll
-            const parallaxSpeed = 0.5; // Adjust this value to change parallax intensity (0.5 = moves at half scroll speed)
-            const scrollWithinSection = Math.max(0, scrollPosition - bigHeroTop);
-            const parallaxOffset = scrollWithinSection * parallaxSpeed;
+            // Get overall page scroll position
+            const scrollY = window.scrollY || window.pageYOffset;
+            const windowHeight = window.innerHeight;
             
-            // Apply transform to move the cake
-            if (bigHeroCake) {
-                bigHeroCake.style.transform = `translateY(${parallaxOffset}px)`;
+            // Calculate rotation based on scroll (360 degrees per viewport height)
+            // This creates a smooth rotation as you scroll through the page
+            const rotationSpeed = 0.3; // Degrees per pixel scrolled
+            const rotation = scrollY * rotationSpeed;
+            
+            // Update camera-orbit to rotate the model view
+            // Keep the elevation at 75deg and allow full 360 rotation
+            bigHeroCake.setAttribute('camera-orbit', `${rotation}deg 75deg auto`);
+            
+            // Also apply direct model rotation if modelGroup is available
+            if (modelGroup && THREE) {
+                const rotationRadians = (rotation * Math.PI) / 180;
+                modelGroup.rotation.y = rotationRadians;
             }
         }
         
-        // Throttled scroll handler
+        // Throttled scroll handler for reveal effect
         let ticking = false;
         window.addEventListener('scroll', () => {
+            // Handle rotation on every scroll
+            handleScrollRotation();
+            
+            // Handle reveal effect with throttling
             if (!ticking) {
                 window.requestAnimationFrame(() => {
                     updateCakeReveal();
-                    updateParallaxScroll();
                     ticking = false;
                 });
                 ticking = true;
@@ -313,13 +358,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initial check
         setTimeout(() => {
             updateCakeReveal();
-            updateParallaxScroll();
+            handleScrollRotation();
         }, 200);
         
         // Also check on resize
         window.addEventListener('resize', () => {
             updateCakeReveal();
-            updateParallaxScroll();
+            handleScrollRotation();
         });
     }
 
@@ -420,7 +465,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Example: How to customize materials/colors (if models support it)
+    // You can access the model and modify materials after it loads:
+    /*
+    heroModelViewer.addEventListener('load', () => {
+        const model = heroModelViewer.model;
+        if (model) {
+            // Access materials
+            model.materials.forEach((material) => {
+                // Change base color
+                if (material.pbrMetallicRoughness) {
+                    material.pbrMetallicRoughness.setBaseColorFactor([1, 0, 0, 1]); // Red
+                }
+                // Or use material.setProperty('baseColorFactor', [r, g, b, a])
+            });
+        }
+    });
+    */
 
+    // Example: How to use variants (if models have variants defined)
+    /*
+    // First check if model has variants
+    heroModelViewer.addEventListener('load', () => {
+        const variantNames = heroModelViewer.availableVariants;
+        if (variantNames && variantNames.length > 0) {
+            // Switch to a variant
+            heroModelViewer.variantName = variantNames[0];
+        }
+    });
+    */
 
     // Color customization variables
     const colorPicker = document.getElementById('color-picker');

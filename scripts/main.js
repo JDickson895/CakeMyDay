@@ -15,9 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalCakeName = document.getElementById('modal-cake-name');
     const modelViewer = document.getElementById('model-viewer');
     const btn3dButtons = document.querySelectorAll('.btn-3d');
+    const btnArButtons = document.querySelectorAll('.btn-ar');
     const colorPicker = document.getElementById('color-picker');
     const colorPresets = document.querySelectorAll('.color-preset');
     const resetColorBtn = document.getElementById('reset-color');
+    const modalAr = document.getElementById('modal-ar');
+    const modalArClose = document.querySelector('.modal-ar-close');
+    const modalArCakeName = document.getElementById('modal-ar-cake-name');
+    const arIframe = document.getElementById('ar-iframe');
 
     // ========================================================================
     // CAKE MODEL DATA
@@ -241,4 +246,73 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
         }
     });
+
+    // ========================================================================
+    // AR MODAL - HANDLE AR BUTTON CLICKS
+    // ========================================================================
+    const arUrls = {
+        'chocolate': 'https://jonathan3630.8thwall.app/scene21/',
+        'blackforest': 'https://jonathan3630.8thwall.app/mycakes/',
+        'wedding-cake': 'https://jonathan3630.8thwall.app/scene22/',
+        'strawberry': 'https://jonathan3630.8thwall.app/strawberry/',
+        'carousel': 'https://jonathan3630.8thwall.app/carousel/',
+        'flower-cake': 'https://jonathan3630.8thwall.app/flowercake/',
+        'pear-cake': 'https://jonathan3630.8thwall.app/pearcake/',
+        'Macarons-cake': 'https://jonathan3630.8thwall.app/macaronscake/',
+        'circus': 'https://jonathan3630.8thwall.app/circus/',
+        'lanterm': 'https://jonathan3630.8thwall.app/lanterm/',
+        'flower-25': 'https://jonathan3630.8thwall.app/flower25/',
+        'flower-flat-25': 'https://jonathan3630.8thwall.app/flowerflat25/',
+    };
+
+    // Open AR modal
+    btnArButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            const cakeId = this.getAttribute('data-cake');
+            const cakeName = this.closest('.cake-card').querySelector('.cake-name').textContent;
+            const arUrl = arUrls[cakeId];
+
+            if (arUrl) {
+                modalArCakeName.textContent = cakeName + ' - AR View';
+                arIframe.setAttribute('src', arUrl);
+                modalAr.style.display = 'block';
+            } else {
+                alert('AR view is not available for this cake yet.');
+            }
+        });
+    });
+
+    // Close AR modal handlers
+    if (modalArClose) {
+        modalArClose.addEventListener('click', function() {
+            modalAr.style.display = 'none';
+            arIframe.setAttribute('src', ''); // Clear iframe when closing
+        });
+    }
+
+    window.addEventListener('click', function(event) {
+        if (event.target === modalAr) {
+            modalAr.style.display = 'none';
+            arIframe.setAttribute('src', ''); // Clear iframe when closing
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modalAr.style.display === 'block') {
+            modalAr.style.display = 'none';
+            arIframe.setAttribute('src', ''); // Clear iframe when closing
+        }
+    });
+
 });
+
+
+// Speech functionality
+document.querySelectorAll(".speak-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const audioSrc = btn.getAttribute("data-audio");
+  
+      const audio = new Audio(audioSrc);
+      audio.play();
+    });
+  });

@@ -210,6 +210,22 @@ main {
     padding: 60px 40px;
 }
 
+/* Speaker Section */
+.speak-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 10px;
+    color: #444;
+    transition: 0.2s ease;
+}
+
+.speak-btn:hover {
+    color: #ff69b4;
+    transform: scale(1.2);
+}
+
 .our-cakes h2 {
     text-align: center;
     font-size: 36px;
@@ -284,6 +300,22 @@ main {
 
 .btn-3d:hover {
     background-color: #ff1493;
+}
+
+.btn-ar {
+    background-color: #0066ff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-ar:hover {
+    background-color: #0052cc;
 }
 
 /* 3D Model Modal */
@@ -429,6 +461,44 @@ main {
     background-color: #ff1493;
 }
 
+/* AR Modal */
+.modal-ar-content {
+    max-width: 1200px;
+}
+
+.modal-ar-container {
+    width: 100%;
+    height: 80vh;
+    min-height: 500px;
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#ar-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 4px;
+}
+
+.modal-ar-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    z-index: 10;
+}
+
+.modal-ar-close:hover,
+.modal-ar-close:focus {
+    color: #000;
+}
+
 /* Responsive design for modal */
 @media (max-width: 768px) {
     .modal-viewer-container {
@@ -441,6 +511,11 @@ main {
     
     #model-viewer {
         height: 400px;
+    }
+    
+    .modal-ar-container {
+        height: 70vh;
+        min-height: 400px;
     }
 }
 
@@ -497,6 +572,7 @@ main {
     font-size: 16px;
     cursor: pointer;
 }
+
 
 /* Footer */
 footer {
